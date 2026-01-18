@@ -9,6 +9,7 @@ import Divider from "@mui/material/Divider"
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 const closedDrawerWidth = 72;
@@ -16,21 +17,24 @@ const closedDrawerWidth = 72;
 export default function SideMenu({ open, onClose }) {
     const theme = useTheme();
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const navigate = useNavigate();
     const menuItems = [
-        { text: 'Dashboard', icon: <DashboardIcon />, onClick: () => {} },
-        { text: 'Projects and Initiatives', icon: <WorkIcon />, onClick: () => {} },
-        { text: 'Impact Map', icon: <MapIcon />, onClick: () => {} },
-        { text: 'Benchmark', icon: <CompareIcon />, onClick: () => {} },
-        { text: 'Reports', icon: <AssessmentIcon />, onClick: () => {} },
+        { text: 'Dashboard', icon: <DashboardIcon />, path: '/'},
+        { text: 'Projects and Initiatives', icon: <WorkIcon />, path: '/projects' },
+        { text: 'Impact Map', icon: <MapIcon />, path: '/impact-map' },
+        { text: 'Benchmark', icon: <CompareIcon />,path: '/benchmark' },
+        { text: 'Reports', icon: <AssessmentIcon />, path: '/reports' },
     ];
 
     return (
-        <Box sx={{ 
+        <Box 
+        
+        sx={{ 
             width: open ? drawerWidth : closedDrawerWidth, 
             flexShrink: 0 ,
             "& .MuiDrawer-paper": {
                 position: "fixed",
-                top: 0,
+                top: 64,
                 left: 0,
                 width: open ? drawerWidth : closedDrawerWidth,
                 overflowX: 'hidden',
@@ -44,18 +48,10 @@ export default function SideMenu({ open, onClose }) {
         <Drawer 
         variant="permanent" 
         anchor="left" 
-        open={open} >
+        open={open}
+        onclose={onClose} >
 
-            {open && (
-                <>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
-                 <Typography variant="h6" sx={{ m: 2 }}> Menu </Typography>
-                 <IconButton sx={{ ml: 1 }} onClick={onClose}> <CloseRoundedIcon /> </IconButton>
-                 </Stack>
-                 <Divider />
-                 </> )}
-
-                 <List>
+            <List>
             {  menuItems.map((item, index) => {
                 const isSelected = selectedIndex === index;
 
@@ -65,13 +61,14 @@ export default function SideMenu({ open, onClose }) {
                 selected={isSelected}
                 onClick={() => {
                     setSelectedIndex(index);
-                    item.onClick();
+                    navigate(item.path);
+                    item.onClick?.();
                 }}
                 sx={{
                     justifyContent: open ? 'flex-start' : 'center',
                     px: 2.5,
                     '&:hover': {
-                        backgroundColor: 'primary.light',
+                        backgroundColor: 'lightblue',
                         color: 'black',
                         '& .MuiListItemIcon-root, & .MuiTypography-root': {
                             color: 'black',},
@@ -79,6 +76,9 @@ export default function SideMenu({ open, onClose }) {
                     ...(isSelected && {
                         backgroundColor: 'primary.dark',
                         color: 'white',
+                        '&:hover': {
+                            backgroundColor: 'primary.dark',
+                        },
                         '& .MuiListItemIcon-root, & .MuiTypography-root': {
                             color: 'white',
                         },
@@ -93,7 +93,9 @@ export default function SideMenu({ open, onClose }) {
                     }}>
                         {item.icon}
                     </ListItemIcon>
-                    {open && (item.text)}
+                    {open && (
+                        <Typography sx={{ color: 'inherit' }}>{item.text} </Typography>
+                    )}
                 </ListItemButton>
                 );
                 })}
