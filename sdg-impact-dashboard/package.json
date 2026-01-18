@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.3.7",
-    "jspdf": "^2.5.2",
-    "@mui/material": "^7.3.7",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@fontsource-variable/geist": "^5.2.8",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
+    "jspdf": "^2.5.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.1.5"

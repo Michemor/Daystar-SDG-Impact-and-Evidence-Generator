@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 
-export default function TopNavigation() {
+export default function TopNavigation({ onMenuClick }) {
     return (
         <Box height="64px" sx={{ flexGrow: 1 }}>
             <AppBar position='absolute' color='transparent' elevation={0}
@@ -22,7 +22,11 @@ export default function TopNavigation() {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{ mr: 2 }}
+                        sx={{ 
+                            width: 48, 
+                            height: 48,
+                            ml: 5 }}
+                        onClick={onMenuClick}
                     >
                         <MenuIcon />
                     </IconButton>
