@@ -4,7 +4,11 @@ import { AppBar, Box, IconButton, Toolbar, Typography, Stack } from "@mui/materi
 
 export default function TopNavigation({ onMenuClick }) {
     return (
-        <Box height="64px" sx={{ flexGrow: 1 }}>
+        <Box 
+        height="64px" 
+        sx={(theme) => ({
+            zIndex: theme.zIndex.drawer + 1,
+        })}>
             <AppBar position='absolute' color='transparent' elevation={0}
             sx={{
                 backgroundColor: '#ffffff',
@@ -20,8 +24,7 @@ export default function TopNavigation({ onMenuClick }) {
                         aria-label="menu"
                         sx={{ 
                             width: 48, 
-                            height: 48,
-                            ml: 5 }}
+                            height: 48,}}
                         onClick={onMenuClick}
                     >
                         <MenuIcon />
