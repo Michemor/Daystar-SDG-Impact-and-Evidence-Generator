@@ -12,29 +12,10 @@ import {
 } from 'lucide-react'
 import ExportButtons from '../components/ExportButtons'
 import RecordDetail from '../components/RecordDetail'
+import { sdgsData } from '../data/mockData'
 
-// ============================================
-// SDG DATA - All 17 Sustainable Development Goals
-// ============================================
-const ALL_SDGS = [
-  { id: 1, code: 'SDG 1', title: 'No Poverty', color: '#E5243B', description: 'End poverty in all its forms everywhere' },
-  { id: 2, code: 'SDG 2', title: 'Zero Hunger', color: '#DDA63A', description: 'End hunger, achieve food security and improved nutrition' },
-  { id: 3, code: 'SDG 3', title: 'Good Health and Well-being', color: '#4C9F38', description: 'Ensure healthy lives and promote well-being for all' },
-  { id: 4, code: 'SDG 4', title: 'Quality Education', color: '#C5192D', description: 'Ensure inclusive and equitable quality education' },
-  { id: 5, code: 'SDG 5', title: 'Gender Equality', color: '#FF3A21', description: 'Achieve gender equality and empower all women and girls' },
-  { id: 6, code: 'SDG 6', title: 'Clean Water and Sanitation', color: '#26BDE2', description: 'Ensure availability and sustainable management of water' },
-  { id: 7, code: 'SDG 7', title: 'Affordable and Clean Energy', color: '#FCC30B', description: 'Ensure access to affordable, reliable, sustainable energy' },
-  { id: 8, code: 'SDG 8', title: 'Decent Work and Economic Growth', color: '#A21942', description: 'Promote sustained, inclusive economic growth' },
-  { id: 9, code: 'SDG 9', title: 'Industry, Innovation and Infrastructure', color: '#FD6925', description: 'Build resilient infrastructure, promote innovation' },
-  { id: 10, code: 'SDG 10', title: 'Reduced Inequalities', color: '#DD1367', description: 'Reduce inequality within and among countries' },
-  { id: 11, code: 'SDG 11', title: 'Sustainable Cities and Communities', color: '#FD9D24', description: 'Make cities inclusive, safe, resilient and sustainable' },
-  { id: 12, code: 'SDG 12', title: 'Responsible Consumption and Production', color: '#BF8B2E', description: 'Ensure sustainable consumption and production patterns' },
-  { id: 13, code: 'SDG 13', title: 'Climate Action', color: '#3F7E44', description: 'Take urgent action to combat climate change' },
-  { id: 14, code: 'SDG 14', title: 'Life Below Water', color: '#0A97D9', description: 'Conserve and sustainably use the oceans and marine resources' },
-  { id: 15, code: 'SDG 15', title: 'Life on Land', color: '#56C02B', description: 'Protect, restore and promote sustainable use of ecosystems' },
-  { id: 16, code: 'SDG 16', title: 'Peace, Justice and Strong Institutions', color: '#00689D', description: 'Promote peaceful and inclusive societies' },
-  { id: 17, code: 'SDG 17', title: 'Partnerships for the Goals', color: '#19486A', description: 'Strengthen the means of implementation' },
-]
+// Use centralized SDG data from mockData
+const ALL_SDGS = sdgsData
 
 // ============================================
 // METRIC CARD COMPONENT

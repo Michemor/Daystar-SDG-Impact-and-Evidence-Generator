@@ -1,10 +1,11 @@
+import { useState, useEffect } from 'react'
 import { TrendingUp, FileText, Users, Activity, Radar, Award, Briefcase, BookOpen } from 'lucide-react'
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar as RechartsRadar
 } from 'recharts'
 import RecentProjectsTable from './RecentProjectsTable'
-import { publicationsData } from '../data/mockData'
+import { fetchPublications, fetchDashboardSummary } from '../services/apiClient'
 
 const projectGrowthData = [
   { year: '2015', projects: 30 },
@@ -30,11 +31,11 @@ const sdgNames = [
 ]
 
 // Calculate SDG distribution from publications
-const getSDGRadarData = () => {
+const getSDGRadarData = (publicationsData) => {
   const counts = Array(17).fill(0)
   
   publicationsData.forEach(pub => {
-    pub.sdgs.forEach(sdgId => {
+    (pub.sdgs || []).forEach(sdgId => {
       if (sdgId >= 1 && sdgId <= 17) {
         counts[sdgId - 1]++
       }
@@ -49,63 +50,85 @@ const getSDGRadarData = () => {
   }))
 }
 
-const sdgRadarData = getSDGRadarData()
-
-const stats = [
-  {
-    title: 'Total Projects',
-    value: '16',
-    subtitle: '12 currently active',
-    icon: Briefcase,
-    gradient: 'from-blue-50 to-blue-100',
-    border: 'border-blue-200',
-    iconColor: 'text-blue-600',
-    titleColor: 'text-blue-700',
-    valueColor: 'text-blue-800',
-    subtitleColor: 'text-blue-600',
-  },
-  {
-    title: 'Publications',
-    value: '10',
-    subtitle: 'SDG-aligned works',
-    icon: BookOpen,
-    gradient: 'from-orange-50 to-orange-100',
-    border: 'border-orange-200',
-    iconColor: 'text-orange-600',
-    titleColor: 'text-orange-700',
-    valueColor: 'text-orange-800',
-    subtitleColor: 'text-orange-600',
-  },
-  {
-    title: 'Impact Score',
-    value: '85',
-    subtitle: 'out of 100',
-    icon: Award,
-    gradient: 'from-purple-50 to-purple-100',
-    border: 'border-purple-200',
-    iconColor: 'text-purple-600',
-    titleColor: 'text-purple-700',
-    valueColor: 'text-purple-800',
-    subtitleColor: 'text-purple-600',
-  },
-  {
-    title: 'Community Reach',
-    value: '1,575',
-    subtitle: 'participants engaged',
-    icon: Users,
-    gradient: 'from-green-50 to-green-100',
-    border: 'border-green-200',
-    iconColor: 'text-green-600',
-    titleColor: 'text-green-700',
-    valueColor: 'text-green-800',
-    subtitleColor: 'text-green-600',
-  },
-]
-
 const today = new Date()
 const formattedDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
 export default function MainContent() {
+  const [publications, setPublications] = useState([])
+  const [dashboardStats, setDashboardStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [pubData, summaryData] = await Promise.all([
+          fetchPublications(),
+          fetchDashboardSummary()
+        ])
+        setPublications(pubData)
+        setDashboardStats(summaryData)
+      } catch (error) {
+        console.error('Error loading dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  const sdgRadarData = getSDGRadarData(publications)
+  
+  // Build stats from API or use defaults
+  const stats = [
+    {
+      title: 'Total Projects',
+      value: dashboardStats?.totalProjects || '16',
+      subtitle: `${dashboardStats?.activeProjects || '12'} currently active`,
+      icon: Briefcase,
+      gradient: 'from-blue-50 to-blue-100',
+      border: 'border-blue-200',
+      iconColor: 'text-blue-600',
+      titleColor: 'text-blue-700',
+      valueColor: 'text-blue-800',
+      subtitleColor: 'text-blue-600',
+    },
+    {
+      title: 'Publications',
+      value: dashboardStats?.totalPublications || publications.length || '10',
+      subtitle: 'SDG-aligned works',
+      icon: BookOpen,
+      gradient: 'from-orange-50 to-orange-100',
+      border: 'border-orange-200',
+      iconColor: 'text-orange-600',
+      titleColor: 'text-orange-700',
+      valueColor: 'text-orange-800',
+      subtitleColor: 'text-orange-600',
+    },
+    {
+      title: 'Impact Score',
+      value: dashboardStats?.impactScore || '85',
+      subtitle: 'out of 100',
+      icon: Award,
+      gradient: 'from-purple-50 to-purple-100',
+      border: 'border-purple-200',
+      iconColor: 'text-purple-600',
+      titleColor: 'text-purple-700',
+      valueColor: 'text-purple-800',
+      subtitleColor: 'text-purple-600',
+    },
+    {
+      title: 'Community Reach',
+      value: dashboardStats?.communityReach || '1,575',
+      subtitle: 'participants engaged',
+      icon: Users,
+      gradient: 'from-green-50 to-green-100',
+      border: 'border-green-200',
+      iconColor: 'text-green-600',
+      titleColor: 'text-green-700',
+      valueColor: 'text-green-800',
+      subtitleColor: 'text-green-600',
+    },
+  ]
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">
       {/* Welcome Card */}

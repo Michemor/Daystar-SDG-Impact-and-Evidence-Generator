@@ -7,6 +7,10 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from impact_tracker.views import (
     SDGGoalViewSet, ActivityViewSet, dashboard_summary, analytics_trends
 )
@@ -21,6 +25,10 @@ router.register(r'activities', ActivityViewSet, basename='activity')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+     # JWT Token endpoints
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     # API routes
     path('api/', include(router.urls)),

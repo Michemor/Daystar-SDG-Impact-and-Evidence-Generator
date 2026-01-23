@@ -3,12 +3,16 @@ import {
   LayoutDashboard, 
   Briefcase, 
   GitCompare, 
-  FileText
+  FileText,
+  Target,
+  LogOut
 } from 'lucide-react'
+import { logout } from '../services/apiClient'
 
 const menuItems = [
   { text: 'Overview', icon: LayoutDashboard, path: '/' },
-  { text: 'Projects and Initiatives', icon: Briefcase, path: '/projects' },
+  { text: 'Projects and Publications', icon: Briefcase, path: '/projects' },
+  { text: 'SDG Analysis', icon: Target, path: '/sdg-analysis' },
   { text: 'Benchmark', icon: GitCompare, path: '/benchmark' },
   { text: 'Reports', icon: FileText, path: '/reports' },
 ]
@@ -19,11 +23,11 @@ export default function SideMenu({ open }) {
 
   return (
     <aside
-      className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out z-40 ${
+      className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out z-40 flex flex-col ${
         open ? 'w-60' : 'w-[72px]'
       }`}
     >
-      <nav className="py-4">
+      <nav className="py-4 flex-1">
         <ul className="space-y-1 px-2">
           {menuItems.map((item) => {
             const Icon = item.icon
@@ -54,6 +58,20 @@ export default function SideMenu({ open }) {
           })}
         </ul>
       </nav>
+
+      {/* Logout Button */}
+      <div className="p-2 border-t border-gray-200">
+        <button
+          onClick={logout}
+          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-red-600 hover:bg-red-50"
+          title={!open ? 'Logout' : undefined}
+        >
+          <LogOut className="w-5 h-5 flex-shrink-0" />
+          {open && (
+            <span className="text-sm font-medium truncate">Logout</span>
+          )}
+        </button>
+      </div>
     </aside>
   )
 }
