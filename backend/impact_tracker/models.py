@@ -37,6 +37,7 @@ class Activity(models.Model):
         ('project', 'Project'),
         ('curriculum', 'Curriculum'),
         ('outreach', 'Outreach'),
+        ('publication', 'Publication'), # Added new type for scraped items
     ]
 
     title = models.CharField(max_length=255, help_text="Title of the activity")
@@ -46,6 +47,12 @@ class Activity(models.Model):
         choices=ACTIVITY_TYPES,
         help_text="Type of activity"
     )
+    # New field for scraped authors (dc:creator)
+    authors = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Authors of the activity (for scraped content)"
+    )
     evidence_file = models.FileField(
         upload_to='evidence/',
         blank=True,
@@ -54,15 +61,35 @@ class Activity(models.Model):
     )
     lead_author = models.ForeignKey(
         User,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL, # Changed from PROTECT to SET_NULL
         related_name='activities',
-        help_text="User who uploaded/created this activity"
+        help_text="User who uploaded/created this activity",
+        blank=True, # Allow null
+        null=True # Allow null
+    )
+    # New field for original publication date (dc:date)
+    original_publication_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text="Original publication date of the activity"
     )
     date_created = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ai_classified = models.BooleanField(
         default=False,
         help_text="Whether this activity has been classified by AI"
+    )
+    # New field to indicate if the activity was scraped
+    is_scraped = models.BooleanField(
+        default=False,
+        help_text="Whether this activity was scraped from an external source"
+    )
+    # New field for external URL (dc:identifier)
+    external_url = models.URLField(
+        max_length=500, # Increased max_length to accommodate long URLs
+        blank=True,
+        null=True,
+        help_text="URL to the original external source of the activity"
     )
 
     class Meta:

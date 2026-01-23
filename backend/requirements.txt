@@ -7,3 +7,4 @@ python-dotenv==1.0.0
 google-generativeai==0.3.0
 dj-database-url==2.1.0
 reportlab==4.0.9
+Sickle==0.7.0
