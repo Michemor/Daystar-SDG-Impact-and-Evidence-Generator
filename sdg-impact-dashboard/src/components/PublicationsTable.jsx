@@ -49,7 +49,7 @@ export default function PublicationsTable({ filterText = '' }) {
 
   const query = filterText.trim().toLowerCase()
   
-  const rows = publications.filter((row) => {
+  const rows = publications.map((row) => {
     if (!query) return true
     const haystack = [
       row.project || row.title,

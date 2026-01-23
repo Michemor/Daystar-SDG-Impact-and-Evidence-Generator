@@ -8,16 +8,17 @@ import {
   TrendingUp,
   Building,
   Users,
-  Calendar
+  Calendar,
+  Activity
 } from 'lucide-react'
 import { fetchSDGs, fetchProjects, fetchPublications } from '../services/apiClient'
 
 // Summary Card Component
-const SummaryCard = ({ icon: Icon, label, value, color, bgColor }) => (
+const SummaryCard = ({ label, value, color, bgColor, icon: IconComponent }) => (
   <div className={`${bgColor} rounded-xl p-5 border`}>
     <div className="flex items-center gap-3">
       <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${color.replace('text-', 'bg-').replace('600', '100')}`}>
-        <Icon className={`w-6 h-6 ${color}`} />
+        {IconComponent && <IconComponent className={`w-6 h-6 ${color}`} />}
       </div>
       <div>
         <p className={`text-2xl font-bold ${color}`}>{value}</p>
@@ -214,7 +215,7 @@ export default function SDGAnalysis() {
 
   // Calculate summary statistics
   const totalProjects = activities.filter(a => a.activity_type === 'project').length
-  const totalPublications = activities.filter(a => a.activity_type === 'publication').length
+  const totalPublications = activities.filter(a => a.activity_type === 'research').length
   const activeSDGs = sdgs.filter(sdg => 
     activities.some(a => a.sdgs?.includes(sdg.id))
   ).length
