@@ -80,7 +80,6 @@ const request = async (path, options = {}, retry = true) => {
     'Content-Type': 'application/json',
     ...options.headers,
   }
-
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`
   }
@@ -200,6 +199,9 @@ export const fetchSDGSummary = async (sdgNumber) => {
 // ========== Reports (with mock data fallback) ==========
 
 export const fetchDashboardSummary = async () => {
+
+  return getMockSummary()
+  /**
   try {
     const response = await request('/reports/summary/')
     if (response) {
@@ -210,6 +212,7 @@ export const fetchDashboardSummary = async () => {
     console.warn('Falling back to mock dashboard summary:', error.message)
     return getMockSummary()
   }
+     */
 }
 
 // ========== Dashboard Stats ==========
