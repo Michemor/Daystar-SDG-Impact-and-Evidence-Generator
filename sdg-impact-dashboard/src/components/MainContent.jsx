@@ -56,7 +56,6 @@ const formattedDate = today.toLocaleDateString('en-US', { year: 'numeric', month
 export default function MainContent() {
   const [publications, setPublications] = useState([])
   const [dashboardStats, setDashboardStats] = useState(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadData = async () => {
@@ -70,7 +69,7 @@ export default function MainContent() {
       } catch (error) {
         console.error('Error loading dashboard data:', error)
       } finally {
-        setLoading(false)
+        // loading state removed
       }
     }
     loadData()
