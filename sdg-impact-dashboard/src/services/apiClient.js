@@ -131,11 +131,11 @@ export const fetchActivities = async (type = null) => {
 }
 
 export const fetchProjects = async () => {
-  return await fetchActivities('project')
+  return await fetchActivities('Project')
 }
 
 export const fetchPublications = async () => {
-  return await fetchActivities('publication')
+  return await fetchActivities('Publication')
 }
 
 export const fetchActivityDetail = async (id) => {
@@ -231,7 +231,7 @@ export const fetchDashboardStats = async () => {
 
 export const fetchRecentProjects = async (limit = 5) => {
   try {
-    const response = await request(`/activities/?activity_type=project&ordering=-date_created&limit=${limit}`)
+    const response = await request(`/activities/?activity_type=Project&ordering=-date_created&limit=${limit}`)
     const results = response?.results || response
     if (results && results.length > 0) {
       return results.slice(0, limit)
