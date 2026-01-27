@@ -240,41 +240,40 @@ export default function ReportsPage() {
   }, [])
 
   // ============================================
-  // API CALL: Fetch SDG-specific projects & publications
+  // API CALL: Fetch SDG-specific projects & publications FOR ALL SDGs ON MOUNT
   // ============================================
-  const loadSdgData = async (sdgId) => {
-    // Check if we already have data for this SDG
-    if (sdgData[sdgId] && !sdgData[sdgId].loading) {
-      return
+  useEffect(() => {
+    const loadAllSdgData = async () => {
+      const newSdgData = {}
+      await Promise.all(
+        ALL_SDGS.map(async (sdg) => {
+          try {
+            const activities = await fetchSDGActivities(sdg.id)
+            const projects = activities.filter(a => a.activity_type === 'Project')
+            const publications = activities.filter(a => a.activity_type === 'Publication')
+            newSdgData[sdg.id] = {
+              projects,
+              publications,
+              loading: false
+            }
+          } catch (error) {
+            newSdgData[sdg.id] = {
+              projects: [],
+              publications: [],
+              loading: false,
+              error: error.message
+            }
+          }
+        })
+      )
+      setSdgData(newSdgData)
     }
+    loadAllSdgData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    // Set loading state for this SDG
-    setSdgData(prev => ({
-      ...prev,
-      [sdgId]: { projects: [], publications: [], loading: true }
-    }))
-
-    try {
-      const activities = await fetchSDGActivities(sdgId)
-      const projects = activities.filter(a => a.activity_type === 'Project')
-      const publications = activities.filter(a => a.activity_type === 'Publication')
-      
-      setSdgData(prev => ({
-        ...prev,
-        [sdgId]: { 
-          projects: projects, 
-          publications: publications, 
-          loading: false 
-        }
-      }))
-    } catch (error) {
-      console.error(`Failed to load data for SDG ${sdgId}:`, error)
-      setSdgData(prev => ({
-        ...prev,
-        [sdgId]: { projects: [], publications: [], loading: false, error: error.message }
-      }))
-    }
-  }
+  // If you want to keep lazy loading on expand, you can keep the old loadSdgData function and call it in handleToggleSdg
+  // But now, all SDG data is loaded on mount, so handleToggleSdg can just expand/collapse
 
   // ============================================
   // Handler: Toggle SDG expansion
@@ -284,7 +283,6 @@ export default function ReportsPage() {
       setExpandedSdgId(null) // Collapse if already expanded
     } else {
       setExpandedSdgId(sdgId) // Expand this SDG
-      loadSdgData(sdgId) // Load data if not already loaded
     }
   }
 
