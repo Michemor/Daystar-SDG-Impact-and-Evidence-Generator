@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { 
-  LayoutDashboard, 
-  Briefcase, 
-  GitCompare, 
+import {
+  LayoutDashboard,
+  Briefcase,
+  GitCompare,
   FileText,
   Target,
   LogOut
@@ -22,9 +22,8 @@ export default function SideMenu({ open }) {
 
   return (
     <aside
-      className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out z-40 flex flex-col ${
-        open ? 'w-60' : 'w-[72px]'
-      }`}
+      className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 ease-in-out z-40 flex flex-col ${open ? 'w-60' : 'w-[72px]'
+        }`}
     >
       <nav className="py-4 flex-1">
         <ul className="space-y-1 px-2">
@@ -36,17 +35,15 @@ export default function SideMenu({ open }) {
               <li key={item.path}>
                 <button
                   onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
-                    isActive
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${isActive
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
-                  }`}
+                    }`}
                   title={!open ? item.text : undefined}
                 >
                   <Icon
-                    className={`w-5 h-5 flex-shrink-0 ${
-                      isActive ? 'text-white' : 'text-blue-600 group-hover:text-blue-600'
-                    }`}
+                    className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-blue-600 group-hover:text-blue-600'
+                      }`}
                   />
                   {open && (
                     <span className="text-sm font-medium truncate">{item.text}</span>
@@ -58,7 +55,25 @@ export default function SideMenu({ open }) {
         </ul>
       </nav>
 
- 
+      {/* Logout Button */}
+      <div className="p-4 border-t border-gray-200">
+        <button
+          onClick={() => {
+            if (window.confirm('Are you sure you want to sign out?')) {
+              localStorage.removeItem('access_token');
+              navigate('/login');
+            }
+          }}
+          className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-red-600 hover:bg-red-50 hover:text-red-700`}
+        >
+          <LogOut
+            className={`w-5 h-5 flex-shrink-0 text-red-600 group-hover:text-red-700`}
+          />
+          {open && (
+            <span className="text-sm font-medium truncate">Sign Out</span>
+          )}
+        </button>
+      </div>
     </aside>
   )
 }

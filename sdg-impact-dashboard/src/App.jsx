@@ -4,15 +4,23 @@ import MainContent from "./components/MainContent"
 import { Route, Routes } from 'react-router-dom'
 import ReportsPage from './pages/ReportsPage'
 import AddEntryPage from './pages/AddEntryPage'
-// import LoginPage from './components/Login'
-// import ProtectedRoute from './components/ProtectedRoute'
+import Login from './pages/Login'
+import ProtectedRoute from './components/ProtectedRoute'
 import Benchmark from "./pages/BenchMark"
 import SDGAnalysis from "./pages/SDGAnalysis"
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />}>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<MainContent />} />
         <Route path="projects" element={<Projects />} />
         <Route path="benchmark" element={<Benchmark />} />
