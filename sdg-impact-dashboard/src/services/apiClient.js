@@ -4,90 +4,27 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 let accessToken = localStorage.getItem('access_token')
 let refreshToken = localStorage.getItem('refresh_token')
 
-export const setTokens = (access, refresh) => {
-  accessToken = access
-  refreshToken = refresh
-  localStorage.setItem('access_token', access)
-  localStorage.setItem('refresh_token', refresh)
-}
+// Authentication logic removed
+// export const setTokens = (access, refresh) => {}
 
-export const clearTokens = () => {
-  accessToken = null
-  refreshToken = null
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-}
+// export const clearTokens = () => {}
 
-export const login = async (username, password) => {
-  const response = await fetch(`${API_BASE_URL}/token/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, password }),
-  })
+// export const login = async (username, password) => {}
 
-  if (!response.ok) {
-    throw new Error('Invalid credentials')
-  }
+// export const logout = () => {}
 
-  const data = await response.json()
-  setTokens(data.access, data.refresh)
-  return data
-}
+// export const refreshAccessToken = async () => {}
 
-export const logout = () => {
-  clearTokens()
-  window.location.href = '/login'
-}
-
-export const refreshAccessToken = async () => {
-  if (!refreshToken) {
-    throw new Error('No refresh token available')
-  }
-
-  const response = await fetch(`${API_BASE_URL}/token/refresh/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ refresh: refreshToken }),
-  })
-
-  if (!response.ok) {
-    clearTokens()
-    throw new Error('Session expired. Please login again.')
-  }
-
-  const data = await response.json()
-  accessToken = data.access
-  localStorage.setItem('access_token', data.access)
-  return data.access
-}
-
-const request = async (path, options = {}, retry = true) => {
+const request = async (path, options = {}) => {
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
   }
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`
-  }
+  // No auth header needed
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
   })
-
-  if (response.status === 401 && retry && refreshToken) {
-    try {
-      await refreshAccessToken()
-      return request(path, options, false)
-    } catch (error) {
-      clearTokens()
-      console.error('Token refresh failed:', error)
-      throw new Error('Session expired. Please login again.')
-    }
-  }
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}))
@@ -98,7 +35,7 @@ const request = async (path, options = {}, retry = true) => {
   return response.json()
 }
 
-export const isAuthenticated = () => !!accessToken
+// export const isAuthenticated = () => false
 
 
 // ============ Activities (with mock data fallback) =============

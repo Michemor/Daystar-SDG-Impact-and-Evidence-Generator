@@ -1,10 +1,2 @@
-import { Navigate, Outlet } from 'react-router-dom'
-import { isAuthenticated } from '../services/apiClient'
-
-export default function ProtectedRoute() {
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <Outlet />
-}
+// This file is now unused. ProtectedRoute removed.
+// You may safely delete this file.
