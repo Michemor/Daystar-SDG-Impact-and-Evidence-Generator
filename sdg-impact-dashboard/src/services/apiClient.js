@@ -2,37 +2,8 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://sdg-backend-509p.onrender.com/api'
 
 
-// Token state (sync with localStorage)
-
-export const setTokens = (access) => {
-  if (access) localStorage.setItem('access_token', access);
-};
-
-export const clearTokens = () => {
-  localStorage.removeItem('access_token');
-};
-
 // Authentication logic removed
 // export const setTokens = (access, refresh) => {}
-
-// export const clearTokens = () => {}
-
-export const login = async (username, password) => {
-  const response = await fetch(`${API_BASE_URL}/token/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({}));
-    const message = errorBody?.detail || 'Login failed.';
-    throw new Error(message);
-  }
-  const { access } = await response.json();
-  setTokens(access);
-  return { access };
-};
-
 // export const logout = () => {}
 
 // export const refreshAccessToken = async () => {}
@@ -42,7 +13,12 @@ const request = async (path, options = {}) => {
     'Content-Type': 'application/json',
     ...options.headers,
   }
-  // No auth header needed
+  // Inject Authorization header if token exists
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
