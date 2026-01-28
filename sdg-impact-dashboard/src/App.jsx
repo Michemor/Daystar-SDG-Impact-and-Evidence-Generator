@@ -12,8 +12,8 @@ import SDGAnalysis from "./pages/SDGAnalysis"
 function App() {
   return (
     <Routes>
-      {/* Public route */}
-      <Route path="/login" element={<LoginPage />} />
+      {/* Public route 
+      <Route path="/login" element={<LoginPage />} /> */}
       
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>

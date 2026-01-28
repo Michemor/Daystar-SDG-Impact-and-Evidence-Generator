@@ -11,7 +11,8 @@ import {
   Calendar,
   Activity
 } from 'lucide-react'
-import { fetchSDGs, fetchActivities } from '../services/apiClient'
+import { fetchSDGs, fetchActivities, fetchSDGSummary } from '../services/apiClient'
+import DrillDownPanel from '../components/DrillDownPanel'
 
 // Summary Card Component
 const SummaryCard = ({ label, value, color, bgColor, icon: IconComponent }) => (
@@ -166,6 +167,11 @@ export default function SDGAnalysis() {
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedSDGs, setExpandedSDGs] = useState(new Set())
+  // DrillDownPanel state
+  const [selectedSDG, setSelectedSDG] = useState(null)
+  const [drilldownData, setDrilldownData] = useState(null)
+  const [drilldownLoading, setDrilldownLoading] = useState(false)
+  const [drilldownError, setDrilldownError] = useState(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -195,6 +201,29 @@ export default function SDGAnalysis() {
       }
       return newSet
     })
+  }
+
+  // DrillDownPanel open handler
+  const handleDrillDown = async (sdg) => {
+    setSelectedSDG(sdg)
+    setDrilldownLoading(true)
+    setDrilldownError(null)
+    setDrilldownData(null)
+    try {
+      const summary = await fetchSDGSummary(sdg.number)
+      setDrilldownData(summary)
+    } catch (error) {
+      setDrilldownError(error.message || 'Failed to load SDG details')
+    } finally {
+      setDrilldownLoading(false)
+    }
+  }
+
+  const handleCloseDrillDown = () => {
+    setSelectedSDG(null)
+    setDrilldownData(null)
+    setDrilldownError(null)
+    setDrilldownLoading(false)
   }
 
   const expandAll = () => {
@@ -285,15 +314,41 @@ export default function SDGAnalysis() {
       {/* SDG List */}
       <div className="space-y-4">
         {sdgs.map((sdg) => (
-          <SDGCard
-            key={sdg.id}
-            sdg={sdg}
-            activities={activities}
-            isExpanded={expandedSDGs.has(sdg.id)}
-            onToggle={() => toggleSDG(sdg.id)}
-          />
+          <div key={sdg.id}>
+            <SDGCard
+              sdg={sdg}
+              activities={activities}
+              isExpanded={expandedSDGs.has(sdg.id)}
+              onToggle={() => toggleSDG(sdg.id)}
+            />
+            {/* DrillDownPanel trigger button, visible when expanded */}
+            {expandedSDGs.has(sdg.id) && (
+              <div className="mt-2 flex justify-end">
+                <button
+                  className="text-sm text-blue-600 hover:underline font-medium"
+                  onClick={() => handleDrillDown(sdg)}
+                >
+                  View SDG Drilldown
+                </button>
+              </div>
+            )}
+          </div>
         ))}
       </div>
+
+      {/* DrillDownPanel modal */}
+      {selectedSDG && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="max-w-2xl w-full mx-4">
+            <DrillDownPanel
+              sdgDetail={drilldownData}
+              loading={drilldownLoading}
+              error={drilldownError}
+              onClose={handleCloseDrillDown}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
